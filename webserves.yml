@@ -1,0 +1,32 @@
+---
+- hosts: all
+  become: true
+  tasks:
+    - name: install webserve in deb
+      apt:
+        name: apache2
+        state: latest
+      when: ansible_os_family == "Debian" 
+
+    - name: install webserve in rhel
+      yum:
+        name: httpd
+        state: latest
+      when: ansible_os_family == "RedHat"  
+
+    - name: copy file
+      copy:
+         src: ./index.html
+         dest: /var/www/html/index.html
+    
+    - name: server restart in deb
+      service:
+        name: apache2
+        state: restarted
+      when: ansible_os_family == "Debian"
+
+    - name: server restart in rhel
+      service:
+        name: httpd
+        state: restarted
+      when: ansible_os_family == "Redhat"         
